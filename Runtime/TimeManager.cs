@@ -31,6 +31,12 @@ namespace Slax.Schedule
         protected float _timeBetweenTicks = 1f;
         protected float _currentTimeBetweenTicks = 0;
 
+        protected virtual void Start()
+        {
+            Initialize();
+            Play();
+        }
+
         protected virtual void Update()
         {
             if (_isPaused) return;
