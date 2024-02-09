@@ -6,7 +6,7 @@ A robust Time & Schedule Event management system. Inspired from games like Harve
 
 1. In Unity, from the package manager, click the `+` icon
 2. Select `Add package from git URL...`.
-3. In the text box that appears, enter this projects git url `https://github.com/FelixBole/schedule-master.git`
+3. In the text box that appears, enter this projects git url `https://github.com/wayheart/schedule-master.git`
 4. That's it !
 
 ## Features
