@@ -11,9 +11,9 @@
 		"Slax"
 	],
 	"author": {
-		"url": "https://github.com/FelixBole",
-		"name": "Felix Bole",
-		"email": "felix.slax@gmail.com"
+		"url": "https://github.com/wayheart",
+		"name": "Vladyslav Yeromenko",
+		"email": "vy.skyp1nus@gmail.com"
 	},
 	"dependencies": {
 		"com.unity.textmeshpro": "^3.0.6"
@@ -38,7 +38,7 @@
 	"samples": [
 		{
 			"displayName": "Demo assets",
-			"description": "Sample Scene, Prefabs and Schedule Events configuration",
+			"description": "Sample Scene, Prefabs and Schedule Events configuration by FelixBole",
 			"path": "Samples/DemoContent"
 		}
 	]
