@@ -29,7 +29,7 @@ namespace Slax.Schedule
         protected virtual void UpdateTime(DateTime date)
         {
             if (_timeText) _timeText.text = date.TimeToString();
-            if (_dateText) _dateText.text = date.DateToString() + " / " + date.Season.ToString();
+            if (_dateText) _dateText.text = date.DateToString() + " / " + date.Month.ToString() + " / " + date.Season.ToString();
             if (_yearText) _yearText.text = "Year " + date.Year.ToString();
 
             UpdateTimeOfDaySprite(date);

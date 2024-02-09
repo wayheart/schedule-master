@@ -28,7 +28,7 @@ namespace Slax.Schedule
 
         private List<ScheduleEvent> searchByTimestampResults = new List<ScheduleEvent>();
 
-        private Timestamp searchTimestamp = new Timestamp(Days.Mon, 0, 0, 0, 0, Season.Spring);
+        private Timestamp searchTimestamp = new Timestamp(Days.Mon, 1, 0, 0, 1, Month.January, Season.Winter);
 
         public static void ShowWindow(ScheduleEventsSO targetEventsSO)
         {
@@ -291,12 +291,16 @@ namespace Slax.Schedule
             EditorGUILayout.LabelField("Search by Timestamp", EditorStyles.boldLabel);
 
             // Draw the Timestamp fields
-            searchTimestamp.Day = (Days)EditorGUILayout.EnumPopup("Day", searchTimestamp.Day);
-            searchTimestamp.Date = EditorGUILayout.IntSlider("Date", searchTimestamp.Date, 0, 28);
+            EditorGUI.BeginDisabledGroup(true);
+            searchTimestamp.Day = (Days)EditorGUILayout.EnumPopup("Day", DateUtils.GetDaysOfWeek(searchTimestamp.Date, (int)searchTimestamp.Month, searchTimestamp.Year));
+            searchTimestamp.Season = (Season)EditorGUILayout.EnumPopup("Season", DateUtils.GetCurrentSeason(searchTimestamp.Month));
+            EditorGUI.EndDisabledGroup();
+
+            searchTimestamp.Date = EditorGUILayout.IntSlider("Date", searchTimestamp.Date, 1, 31);
             searchTimestamp.Hour = EditorGUILayout.IntSlider("Hour", searchTimestamp.Hour, 0, 23);
             searchTimestamp.Minutes = EditorGUILayout.IntSlider("Minutes", searchTimestamp.Minutes, 0, 59);
             searchTimestamp.Year = EditorGUILayout.IntField("Year", searchTimestamp.Year);
-            searchTimestamp.Season = (Season)EditorGUILayout.EnumPopup("Season", searchTimestamp.Season);
+            searchTimestamp.Month = (Month)EditorGUILayout.EnumPopup("Month", searchTimestamp.Month);
 
             if (GUILayout.Button("Search"))
             {
@@ -322,10 +326,10 @@ namespace Slax.Schedule
                         EditorGUILayout.LabelField($"Event ID: {ev.ID}");
                         EditorGUILayout.LabelField($"Type: {ev.Type}");
                         EditorGUILayout.LabelField($"Frequency: {ev.Frequency}");
-                        EditorGUILayout.LabelField($"Timestamp: {ev.Timestamp.Day} {ev.Timestamp.Date}/{ev.Timestamp.Season}/{ev.Timestamp.Year} - {ev.Timestamp.Hour}:{ev.Timestamp.Minutes}");
+                        EditorGUILayout.LabelField($"Timestamp: {ev.Timestamp.Day} {ev.Timestamp.Date}/{ev.Timestamp.Month}/{ev.Timestamp.Season}/{ev.Timestamp.Year} - {ev.Timestamp.Hour}:{ev.Timestamp.Minutes}");
                         if (!ev.IgnoreEndsAt)
                         {
-                            EditorGUILayout.LabelField($"Ends At: {ev.Timestamp.Day} {ev.Timestamp.Date}/{ev.Timestamp.Season}/{ev.Timestamp.Year} - {ev.Timestamp.Hour}:{ev.Timestamp.Minutes}");
+                            EditorGUILayout.LabelField($"Ends At: {ev.EndsAt.Day} {ev.EndsAt.Date}/{ev.EndsAt.Month}/{ev.EndsAt.Season}/{ev.EndsAt.Year} - {ev.EndsAt.Hour}:{ev.EndsAt.Minutes}");
                         }
                         EditorGUILayout.EndVertical();
                         GUILayout.Space(5);
@@ -372,12 +376,17 @@ namespace Slax.Schedule
             EditorGUILayout.LabelField("Timestamp");
             GUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.indentLevel++;
-            newEvent.Timestamp.Day = (Days)EditorGUILayout.EnumPopup("Day", newEvent.Timestamp.Day);
-            newEvent.Timestamp.Date = EditorGUILayout.IntSlider("Date", newEvent.Timestamp.Date, 1, 28);
+
+            EditorGUI.BeginDisabledGroup(true);
+            newEvent.Timestamp.Day = (Days)EditorGUILayout.EnumPopup("Day", DateUtils.GetDaysOfWeek(newEvent.Timestamp.Date, (int)newEvent.Timestamp.Month, newEvent.Timestamp.Year));
+            newEvent.Timestamp.Season = (Season)EditorGUILayout.EnumPopup("Season", DateUtils.GetCurrentSeason(newEvent.Timestamp.Month));
+            EditorGUI.EndDisabledGroup();
+
+            newEvent.Timestamp.Date = EditorGUILayout.IntSlider("Date", newEvent.Timestamp.Date, 1, 31);
             newEvent.Timestamp.Hour = EditorGUILayout.IntSlider("Hour", newEvent.Timestamp.Hour, 0, 23);
             newEvent.Timestamp.Minutes = EditorGUILayout.IntSlider("Minutes", newEvent.Timestamp.Minutes, 0, 59);
             newEvent.Timestamp.Year = EditorGUILayout.IntField("Year", newEvent.Timestamp.Year);
-            newEvent.Timestamp.Season = (Season)EditorGUILayout.EnumPopup("Season", newEvent.Timestamp.Season);
+            newEvent.Timestamp.Month = (Month)EditorGUILayout.EnumPopup("Month", newEvent.Timestamp.Month);
             EditorGUI.indentLevel--;
             GUILayout.EndVertical();
 
@@ -391,12 +400,17 @@ namespace Slax.Schedule
                 EditorGUILayout.LabelField("EndsAt");
                 GUILayout.BeginVertical(EditorStyles.helpBox);
                 EditorGUI.indentLevel++;
-                newEvent.EndsAt.Day = (Days)EditorGUILayout.EnumPopup("Day", newEvent.EndsAt.Day);
-                newEvent.EndsAt.Date = EditorGUILayout.IntSlider("Date", newEvent.EndsAt.Date, 1, 28);
+
+                EditorGUI.BeginDisabledGroup(true);
+                newEvent.EndsAt.Day = (Days)EditorGUILayout.EnumPopup("Day", DateUtils.GetDaysOfWeek(newEvent.EndsAt.Date, (int)newEvent.EndsAt.Month, newEvent.EndsAt.Year));
+                newEvent.EndsAt.Season = (Season)EditorGUILayout.EnumPopup("Season", DateUtils.GetCurrentSeason(newEvent.EndsAt.Month));
+                EditorGUI.EndDisabledGroup();
+
+                newEvent.EndsAt.Date = EditorGUILayout.IntSlider("Date", newEvent.EndsAt.Date, 1, 31);
                 newEvent.EndsAt.Hour = EditorGUILayout.IntSlider("Hour", newEvent.EndsAt.Hour, 0, 23);
                 newEvent.EndsAt.Minutes = EditorGUILayout.IntSlider("Minutes", newEvent.EndsAt.Minutes, 0, 59);
                 newEvent.EndsAt.Year = EditorGUILayout.IntField("Year", newEvent.EndsAt.Year);
-                newEvent.EndsAt.Season = (Season)EditorGUILayout.EnumPopup("Season", newEvent.EndsAt.Season);
+                newEvent.EndsAt.Month = (Month)EditorGUILayout.EnumPopup("Month", newEvent.EndsAt.Month);
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical();
             }
@@ -564,12 +578,32 @@ namespace Slax.Schedule
         {
             EditorGUILayout.LabelField(title);
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Day"));
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Date"));
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Hour"));
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Minutes"));
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Year"));
-            EditorGUILayout.PropertyField(timestampProperty.FindPropertyRelative("Season"));
+
+            SerializedProperty dayProperty = timestampProperty.FindPropertyRelative("Day");
+            SerializedProperty dateProperty = timestampProperty.FindPropertyRelative("Date");
+            SerializedProperty monthProperty = timestampProperty.FindPropertyRelative("Month");
+            SerializedProperty seasonProperty = timestampProperty.FindPropertyRelative("Season");
+            SerializedProperty yearProperty = timestampProperty.FindPropertyRelative("Year");
+            SerializedProperty hourProperty = timestampProperty.FindPropertyRelative("Hour");
+            SerializedProperty minutesProperty = timestampProperty.FindPropertyRelative("Minutes");
+
+            dayProperty.enumValueIndex = (int)DateUtils.GetDaysOfWeek(
+                dateProperty.intValue,
+                monthProperty.enumValueIndex,
+                yearProperty.intValue
+            );
+            seasonProperty.enumValueIndex = (int)DateUtils.GetCurrentSeason((Month)monthProperty.enumValueIndex);
+
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.PropertyField(dayProperty);
+            EditorGUILayout.PropertyField(seasonProperty);
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.PropertyField(dateProperty);
+            EditorGUILayout.PropertyField(hourProperty);
+            EditorGUILayout.PropertyField(minutesProperty);
+            EditorGUILayout.PropertyField(yearProperty);
+            EditorGUILayout.PropertyField(monthProperty);
             EditorGUI.indentLevel--;
         }
 

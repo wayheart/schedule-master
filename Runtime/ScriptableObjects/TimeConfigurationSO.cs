@@ -19,7 +19,9 @@ namespace Slax.Schedule
         public int MaxYears => _maxYears;
         [SerializeField] protected int _year = 1;
         public int Year => _year;
-        [Range(1, 28)]
+        [SerializeField] protected Month _month;
+        public Month Month => _month;
+        [Range(1, 31)]
         [Tooltip("Day in month")]
         [SerializeField] protected int _date = 0;
         public int Date => _date;

@@ -38,7 +38,11 @@ namespace Slax.Schedule
         /// </summary>
         protected override void CheckEventOnTick(DateTime date)
         {
-            List<ScheduleEvent> eventsToStart = _scheduleEvents.GetEventsForTimestamp(date.GetTimestamp());
+            Timestamp timestamp = date.GetTimestamp();
+
+            List<ScheduleEvent> eventsToStart = _scheduleEvents.GetEventsForTimestamp(timestamp);
+
+            eventsToStart.RemoveAll(e => !e.IsValid(timestamp));
 
             if (eventsToStart.Count == 0) return;
 
@@ -87,5 +91,4 @@ namespace Slax.Schedule
             return eventsToday;
         }
     }
-
 }

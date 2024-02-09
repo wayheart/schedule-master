@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+
 namespace Slax.Schedule
 {
 
@@ -400,7 +401,7 @@ namespace Slax.Schedule
                         }
 
                     }
-                    
+
                     if (GUILayout.Button(_editorConfig.Cog, GUILayout.MaxWidth(35), GUILayout.MaxHeight(25)))
                     {
                         _eventIDFromBrowse = ev.ID;

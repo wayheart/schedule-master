@@ -11,9 +11,10 @@ namespace Slax.Schedule
     {
         [SerializeField] protected TimeConfigurationSO _timeConfiguration;
         protected Season _season;
+        protected Month _month;
         protected int _maxYears = 99;
         protected int _year = 1;
-        protected int _date = 0;
+        protected int _date = 1;
         protected int _hour = 0;
         protected int _minutes = 0;
         protected DayConfiguration _dayConfiguration;
@@ -21,6 +22,7 @@ namespace Slax.Schedule
 
         public static event UnityAction<DateTime> OnAwake;
         public static event UnityAction<DateTime> OnNewDay;
+        public static event UnityAction<DateTime> OnNewMonth;
         public static event UnityAction<DateTime> OnNewSeason;
         public static event UnityAction<DateTime> OnNewYear;
         public static event UnityAction<DateTime> OnDateTimeChanged;
@@ -74,6 +76,7 @@ namespace Slax.Schedule
             Pause();
             AdvanceTimeStatus status = _dateTime.SetNewDay();
             if (status.AdvancedDay) OnNewDay?.Invoke(_dateTime);
+            if (status.AdvancedDay) OnNewMonth?.Invoke(_dateTime);
             if (status.AdvancedSeason) OnNewSeason?.Invoke(_dateTime);
             if (status.AdvancedYear) OnNewYear?.Invoke(_dateTime);
             Play();
@@ -82,6 +85,7 @@ namespace Slax.Schedule
         public virtual void SetTime(Timestamp t)
         {
             _season = t.Season;
+            _month = t.Month;
             _date = t.Date;
             _year = t.Year;
             _hour = t.Hour;
@@ -92,9 +96,11 @@ namespace Slax.Schedule
 
         protected virtual void Tick()
         {
-            AdvanceTimeStatus status = _dateTime.AdvanceMinutes(_tickMinutesIncrease);
+            // AdvanceTimeStatus status = _dateTime.AdvanceMinutes(_tickMinutesIncrease);
+            AdvanceTimeStatus status = _dateTime.SetNewDay();
             OnDateTimeChanged?.Invoke(_dateTime);
             if (status.AdvancedDay) OnNewDay?.Invoke(_dateTime);
+            if (status.AdvancedDay) OnNewMonth?.Invoke(_dateTime);
             if (status.AdvancedSeason) OnNewSeason?.Invoke(_dateTime);
             if (status.AdvancedYear) OnNewYear?.Invoke(_dateTime);
         }
@@ -102,6 +108,7 @@ namespace Slax.Schedule
         protected virtual void Setup()
         {
             _season = _timeConfiguration.Season;
+            _month = _timeConfiguration.Month;
             _maxYears = _timeConfiguration.MaxYears;
             _year = _timeConfiguration.Year;
             _date = _timeConfiguration.Date;
@@ -114,7 +121,7 @@ namespace Slax.Schedule
 
         protected virtual void CreateDateTime()
         {
-            _dateTime = new DateTime(_date, (int)_season, _year, _hour, _minutes * _tickMinutesIncrease, _dayConfiguration);
+            _dateTime = new DateTime(_date, (int)_month, (int)_season, _year, _hour, _minutes * _tickMinutesIncrease, _dayConfiguration);
 
             // We Invoke here so that other scripts can setup during awake with
             // the starting DateTime

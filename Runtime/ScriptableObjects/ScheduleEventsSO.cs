@@ -62,19 +62,19 @@ namespace Slax.Schedule
                 switch (ev.Frequency)
                 {
                     case ScheduleEventFrequency.UNIQUE:
-                        AddToDictionary(ev, _uniqueEventsDict, new UniqueTimestamp(ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes, (int)ev.Timestamp.Season, ev.Timestamp.Year));
+                        AddToDictionary(ev, _uniqueEventsDict, new UniqueTimestamp(ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes, (int)ev.Timestamp.Month, (int)ev.Timestamp.Season, ev.Timestamp.Year));
                         break;
                     case ScheduleEventFrequency.DAILY:
                         AddToDictionary(ev, _dailyEventsDict, new DailyTimestamp(ev.Timestamp.Hour, ev.Timestamp.Minutes));
                         break;
                     case ScheduleEventFrequency.WEEKLY:
-                        AddToDictionary(ev, _weeklyEventsDict, new WeeklyTimestamp(ev.Timestamp.Day, ev.Timestamp.Hour, ev.Timestamp.Minutes));
+                        AddToDictionary(ev, _weeklyEventsDict, new WeeklyTimestamp((int)ev.Timestamp.Day, ev.Timestamp.Hour, ev.Timestamp.Minutes));
                         break;
                     case ScheduleEventFrequency.MONTHLY:
-                        AddToDictionary(ev, _monthlyEventsDict, new MonthlyTimestamp(ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes));
+                        AddToDictionary(ev, _monthlyEventsDict, new MonthlyTimestamp((int)ev.Timestamp.Month, ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes));
                         break;
                     case ScheduleEventFrequency.ANNUAL:
-                        AddToDictionary(ev, _annualEventsDict, new AnnualTimestamp(ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes, (int)ev.Timestamp.Season));
+                        AddToDictionary(ev, _annualEventsDict, new AnnualTimestamp(ev.Timestamp.Date, ev.Timestamp.Hour, ev.Timestamp.Minutes, (int)ev.Timestamp.Month, (int)ev.Timestamp.Season));
                         break;
                     default:
                         break;
@@ -193,7 +193,7 @@ namespace Slax.Schedule
         {
             List<ScheduleEvent> eventsToReturn = new List<ScheduleEvent>();
 
-            if (_uniqueEventsDict.TryGetValue(new UniqueTimestamp(timestamp.Date, timestamp.Hour, timestamp.Minutes, (int)timestamp.Season, timestamp.Year), out var uniqueEvents))
+            if (_uniqueEventsDict.TryGetValue(new UniqueTimestamp(timestamp.Date, timestamp.Hour, timestamp.Minutes, (int)timestamp.Month, (int)timestamp.Season, timestamp.Year), out var uniqueEvents))
             {
                 eventsToReturn.AddRange(uniqueEvents);
             }
@@ -203,17 +203,17 @@ namespace Slax.Schedule
                 eventsToReturn.AddRange(dailyEvents);
             }
 
-            if (_weeklyEventsDict.TryGetValue(new WeeklyTimestamp(timestamp.Day, timestamp.Hour, timestamp.Minutes), out var weeklyEvents))
+            if (_weeklyEventsDict.TryGetValue(new WeeklyTimestamp((int)timestamp.Day, timestamp.Hour, timestamp.Minutes), out var weeklyEvents))
             {
                 eventsToReturn.AddRange(weeklyEvents);
             }
 
-            if (_monthlyEventsDict.TryGetValue(new MonthlyTimestamp(timestamp.Date, timestamp.Hour, timestamp.Minutes), out var monthlyEvents))
+            if (_monthlyEventsDict.TryGetValue(new MonthlyTimestamp((int)timestamp.Month, timestamp.Date, timestamp.Hour, timestamp.Minutes), out var monthlyEvents))
             {
                 eventsToReturn.AddRange(monthlyEvents);
             }
 
-            if (_annualEventsDict.TryGetValue(new AnnualTimestamp(timestamp.Date, timestamp.Hour, timestamp.Minutes, (int)timestamp.Season), out var annualEvents))
+            if (_annualEventsDict.TryGetValue(new AnnualTimestamp(timestamp.Date, timestamp.Hour, timestamp.Minutes, (int)timestamp.Month, (int)timestamp.Season), out var annualEvents))
             {
                 eventsToReturn.AddRange(annualEvents);
             }

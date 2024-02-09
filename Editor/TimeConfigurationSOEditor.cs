@@ -44,9 +44,6 @@ namespace Slax.Schedule
             EditorGUILayout.LabelField("Start Date & Time", EditorStyles.boldLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
 
-            SerializedProperty seasonProperty = serializedObject.FindProperty("_season");
-            EditorGUILayout.PropertyField(seasonProperty);
-
             SerializedProperty maxYears = serializedObject.FindProperty("_maxYears");
             EditorGUILayout.PropertyField(maxYears);
 
@@ -55,8 +52,17 @@ namespace Slax.Schedule
             SerializedProperty yearProperty = serializedObject.FindProperty("_year");
             yearProperty.intValue = EditorGUILayout.IntSlider(new GUIContent("Year"), yearProperty.intValue, 1, _timeConfiguration.MaxYears);
 
+            SerializedProperty monthProperty = serializedObject.FindProperty("_month");
+            EditorGUILayout.PropertyField(monthProperty);
+
+            EditorGUI.BeginDisabledGroup(true);
+            SerializedProperty seasonProperty = serializedObject.FindProperty("_season");
+            seasonProperty.enumValueIndex = (int)DateUtils.GetCurrentSeason((Month)monthProperty.enumValueIndex);
+            EditorGUILayout.PropertyField(seasonProperty);
+            EditorGUI.EndDisabledGroup();
+
             SerializedProperty dateProperty = serializedObject.FindProperty("_date");
-            EditorGUILayout.PropertyField(dateProperty);
+            dateProperty.intValue = EditorGUILayout.IntSlider(new GUIContent("Date"), dateProperty.intValue, 1, 31);
 
             SerializedProperty hourProperty = serializedObject.FindProperty("_hour");
             EditorGUILayout.PropertyField(hourProperty);

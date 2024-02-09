@@ -32,12 +32,16 @@ namespace Slax.Schedule
         /// <summary>The current season</summary>
         public Season Season => _season;
 
-        private int _totalNumDays;
-        public int TotalNumDays => _totalNumDays;
-        private int _totalNumWeeks;
-        public int TotalNumWeeks => _totalNumWeeks;
+        private Month _month;
+        /// <summary>The current Month</summary>
+        public Month Month => _month;
+
+        //private int _totalNumDays;
+        //public int TotalNumDays => _totalNumDays;
+        //private int _totalNumWeeks;
+        //public int TotalNumWeeks => _totalNumWeeks;
         /// <summary>Current week on a 4 seasons of 28 days basis</summary>
-        public int CurrentWeek => _totalNumWeeks % 16 == 0 ? 16 : _totalNumWeeks % 16;
+        //public int CurrentWeek => _totalNumWeeks % 16 == 0 ? 16 : _totalNumWeeks % 16;
 
         private float _currentDayProgress;
         /// <summary>Progress of the day, ignoring day configuration so from 00:00 to 23:59</summary>
@@ -47,21 +51,22 @@ namespace Slax.Schedule
         public DayConfiguration DayConfiguration => _dayConfiguration;
         #endregion
 
-        public DateTime(int date, int season, int year, int hour, int minutes, DayConfiguration dayConfiguration)
+        public DateTime(int date, int month, int season, int year, int hour, int minutes, DayConfiguration dayConfiguration)
         {
-            _day = (Days)(date % 7);
-            if (_day == 0) _day = (Days)7;
+            _day = DateUtils.GetDaysOfWeek(date, month, year);
             _date = date;
             _season = (Season)season;
+            _month = (Month)month;
+
             _year = year;
 
             _hour = hour;
             _minutes = minutes;
 
-            _totalNumDays = (int)_season > 0 ? date + (28 * (int)_season) : date;
-            _totalNumDays = year > 1 ? _totalNumDays + ((28 * 4) * (year - 1)) : _totalNumDays;
+            //_totalNumDays = (int)_season > 0 ? date + (28 * (int)_season) : date;
+            //_totalNumDays = year > 1 ? _totalNumDays + ((28 * 4) * (year - 1)) : _totalNumDays;
 
-            _totalNumWeeks = 1 + _totalNumDays / 7;
+            //_totalNumWeeks = 1 + _totalNumDays / 7;
 
             int totalMinutesElapsed = (_hour * 60) + _minutes;
             _currentDayProgress = (float)totalMinutesElapsed / 1440; // 1440 = 24 * 60 mins
@@ -125,20 +130,44 @@ namespace Slax.Schedule
             if (_day + 1 > (Days)7)
             {
                 _day = (Days)1;
-                _totalNumWeeks++;
+                //_totalNumWeeks++;
             }
             else _day++;
 
             _date++;
 
-            if (_date % 29 == 0)
+            if (_date > DaysInMonth(_month, _year))
             {
                 _date = 1;
+                return AdvanceMonth(status);
+            }
+
+            //_totalNumDays++;
+            status.AdvancedDay = true;
+            RecalculateCurrentDayProgress();
+            return status;
+        }
+
+        /// <summary>
+        /// Called when the advance day notices
+        /// a change in month is needed
+        /// </summary>
+        private AdvanceTimeStatus AdvanceMonth(AdvanceTimeStatus status)
+        {
+            _month = (Month)(((int)_month + 1) % 12); // Циклічний перехід між місяцями
+
+            if (_month == Month.January)
+            {
+                return AdvanceYear(status); // Інкремент року при переході на січень
+            }
+
+            // Тут можна додати логіку для автоматичного оновлення сезону, якщо потрібно
+            if (_month == GetLastMonthOfSeason(_season))
+            {
                 return AdvanceSeason(status);
             }
 
-            _totalNumDays++;
-            status.AdvancedDay = true;
+            status.AdvancedMonth = true;
             RecalculateCurrentDayProgress();
             return status;
         }
@@ -149,12 +178,8 @@ namespace Slax.Schedule
         /// </summary>
         private AdvanceTimeStatus AdvanceSeason(AdvanceTimeStatus status)
         {
-            if (_season == Season.Winter)
-            {
-                _season = Season.Spring;
-                return AdvanceYear(status);
-            }
-            else _season++;
+            _season = (Season)(((int)_season + 1) % 4);
+
             status.AdvancedSeason = true;
             RecalculateCurrentDayProgress();
             return status;
@@ -183,6 +208,33 @@ namespace Slax.Schedule
             _currentDayProgress = (float)totalMinutesElapsed / 1440; // 1440 = 24 * 60 mins
         }
 
+        /// <summary>
+        /// Method to get the number of days in a month
+        /// </summary>
+        private int DaysInMonth(Month month, int year)
+        {
+            switch (month)
+            {
+                case Month.February:
+                    return IsLeapYear(year) ? 29 : 28;
+                case Month.April:
+                case Month.June:
+                case Month.September:
+                case Month.November:
+                    return 30;
+                default:
+                    return 31;
+            }
+        }
+
+        /// <summary>
+        /// Method for checking for leap years
+        /// </summary>
+        private bool IsLeapYear(int year)
+        {
+            return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+        }
+
         #endregion
 
         #region Bool Checks
@@ -199,7 +251,7 @@ namespace Slax.Schedule
             season = (Season)Mathf.Clamp((int)season, 0, 3);
             if (year == 0) year = 1;
 
-            return new DateTime(1, (int)season, year, _dayConfiguration.MorningStartHour, 0, _dayConfiguration);
+            return new DateTime(1, (int)GetFirstMonthOfSeason(season), (int)season, year, _dayConfiguration.MorningStartHour, 0, _dayConfiguration);
         }
 
         public DateTime SpringStart(int year) => SeasonStart(Season.Spring, year);
@@ -208,16 +260,60 @@ namespace Slax.Schedule
         public DateTime WinterStart(int year) => SeasonStart(Season.Winter, year);
         #endregion
 
+        #region Month Get Of Season
+        /// <summary>
+        /// Returns the first month of the season.
+        /// Useful when you need to find out the first month in the season
+        /// </summary>
+        private Month GetFirstMonthOfSeason(Season season)
+        {
+            switch (season)
+            {
+                case Season.Spring:
+                    return Month.March;
+                case Season.Summer:
+                    return Month.June;
+                case Season.Autumn:
+                    return Month.September;
+                case Season.Winter:
+                    return Month.December;
+                default:
+                    return Month.January;
+            }
+        }
+
+        /// <summary>
+        /// Returns the last month of the season.
+        /// Useful when you need to find out the last month in the season
+        /// </summary>
+        private Month GetLastMonthOfSeason(Season season)
+        {
+            switch (season)
+            {
+                case Season.Spring:
+                    return Month.May;
+                case Season.Summer:
+                    return Month.August;
+                case Season.Autumn:
+                    return Month.November;
+                case Season.Winter:
+                    return Month.February;
+                default:
+                    return Month.December;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Returns a Schedule Timestamp. Useful for comparing events to the
         /// current timestamp and check if they should run
         /// </summary>
-        public Timestamp GetTimestamp() => new Timestamp(_day, _date, _hour, _minutes, _year, _season);
+        public Timestamp GetTimestamp() => new Timestamp(_day, _date, _hour, _minutes, _year, _month, _season);
 
         public override string ToString()
         {
-            return $"Date: {DateToString()} Season: {_season.ToString()} Time: {TimeToString()} " +
-                $"\nTotal Days: {_totalNumDays} | Total Weeks: {_totalNumWeeks}";
+            return $"Date: {DateToString()} Season: {_season} Time: {TimeToString()} ";
+                //+ $"\nTotal Days: {_totalNumDays} | Total Weeks: {_totalNumWeeks}";
         }
 
         public string DateToString() => $"{Day} {Date}";
@@ -256,18 +352,37 @@ namespace Slax.Schedule
     [System.Serializable]
     public enum Days
     {
-        NULL = 0,
-        Mon = 1,
-        Tue = 2,
-        Wed = 3,
-        Thu = 4,
-        Fri = 5,
-        Sat = 6,
-        Sun = 7
+        Mon = 0,
+        Tue = 1,
+        Wed = 2,
+        Thu = 3,
+        Fri = 4,
+        Sat = 5,
+        Sun = 6
     }
 
     /// <summary>
-    /// Seasons, can be considered as months
+    /// Month
+    /// </summary>
+    [System.Serializable]
+    public enum Month
+    {
+        January = 0,
+        February = 1,
+        March = 2,
+        April = 3,
+        May = 4,
+        June = 5,
+        July = 6,
+        August = 7,
+        September = 8,
+        October = 9,
+        November = 10,
+        December = 11
+    }
+
+    /// <summary>
+    /// Seasons
     /// </summary>
     [System.Serializable]
     public enum Season
@@ -283,6 +398,7 @@ namespace Slax.Schedule
         public bool AdvancedMinutes;
         public bool AdvancedHour;
         public bool AdvancedDay;
+        public bool AdvancedMonth;
         public bool AdvancedSeason;
         public bool AdvancedYear;
 
@@ -291,6 +407,7 @@ namespace Slax.Schedule
             AdvancedMinutes = false;
             AdvancedHour = false;
             AdvancedDay = false;
+            AdvancedMonth = false;
             AdvancedSeason = false;
             AdvancedYear = false;
         }
