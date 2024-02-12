@@ -711,8 +711,8 @@ namespace Slax.Schedule
         {
             EditorGUILayout.LabelField("Events per Day of Week", EditorStyles.boldLabel);
 
-            int[] dayOfWeekCounts = new int[8];
-            string[] dayOfWeekNames = { "Null", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+            int[] dayOfWeekCounts = new int[7];
+            string[] dayOfWeekNames = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
             foreach (var ev in eventsSO.Events)
             {

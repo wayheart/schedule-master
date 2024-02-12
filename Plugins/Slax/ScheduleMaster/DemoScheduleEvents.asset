@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 269a90445f2821e49abc0a964f39cd3a, type: 3}
-  m_Name: Demo_ScheduleEvents
+  m_Name: DemoScheduleEvents
   m_EditorClassIdentifier: 
   _events:
   - Name: Move the heart to the left
@@ -91,4 +91,30 @@ MonoBehaviour:
       Year: 0
       Month: 0
       Season: 0
+  - Name: Left move
+    ID: 1
+    AllSeasons: 1
+    SkipSpring: 0
+    SkipSummer: 0
+    SkipAutumn: 0
+    SkipWinter: 0
+    Type: 0
+    Frequency: 0
+    Timestamp:
+      Day: 0
+      Date: 1
+      Hour: 0
+      Minutes: 0
+      Year: 1
+      Month: 0
+      Season: 3
+    IgnoreEndsAt: 0
+    EndsAt:
+      Day: 2
+      Date: 3
+      Hour: 0
+      Minutes: 0
+      Year: 1
+      Month: 0
+      Season: 3
   DefaultFilePath: Assets/Plugins/Slax/ScheduleMaster/demo_schedule_events.json

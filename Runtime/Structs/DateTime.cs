@@ -347,6 +347,15 @@ namespace Slax.Schedule
     }
 
     /// <summary>
+    /// Configuration of one in game day
+    /// </summary>
+    public enum TimeFlow
+    {
+        Normal = 1,
+        Slow = 4,
+    }
+
+    /// <summary>
     /// Days of the week
     /// </summary>
     [System.Serializable]

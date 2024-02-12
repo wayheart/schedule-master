@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 570705914946194123}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4600473081199415835
 SpriteRenderer:
@@ -98,13 +98,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 769688dbc9458c648a37b65b605020fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseInBetweenTicks: 0
+  OnInBetweenTick:
+    m_PersistentCalls:
+      m_Calls: []
   EventID: 1
   OnEventStarted:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8757539046563402508}
-        m_TargetAssemblyTypeName: Slax.Schedule.DemoNPCReaction, Assembly-CSharp-firstpass
-        m_MethodName: React
+        m_TargetAssemblyTypeName: DemotLogger, Assembly-CSharp
+        m_MethodName: ViewLog
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -123,8 +127,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 570705914946194123}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1106554a585fa1c42bc693c27f0a6741, type: 3}
+  m_Script: {fileID: 11500000, guid: d4cea7ab0c467403ab0af07f4f5c8ef8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
-  movementDirection: {x: -1, y: 0, z: 0}

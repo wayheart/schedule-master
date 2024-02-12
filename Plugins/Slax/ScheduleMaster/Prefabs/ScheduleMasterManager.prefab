@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4000271233268470027}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 210, y: 118, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4406600308900266324
 MonoBehaviour:
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4812dfae459ba1248a18e9733c0e0b4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeConfiguration: {fileID: 11400000, guid: f2aeee5a9d1e6bf4a9e0fd39efd4f9e2, type: 2}
+  _timeConfiguration: {fileID: 11400000, guid: 0313595d4081b4f5085ada3c66b7eb92, type: 2}
 --- !u!114 &8041718926862940442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,4 +58,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7021e7f9e85090458e7aa752b74ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scheduleEvents: {fileID: 11400000, guid: 0e2eb9705b51f494fbafb8d2780c85e3, type: 2}
+  _scheduleEvents: {fileID: 11400000, guid: 0d621cce10045468fbc8b82f001f0036, type: 2}
+  HasInBetweenTickEvents: 0
+  EventCheckAssociationData: {fileID: 0}

@@ -3,7 +3,6 @@ using UnityEngine.Events;
 
 namespace Slax.Schedule
 {
-
     /// <summary>
     /// This class is responsible for handling time progress and invoking Tick update events
     /// </summary>
@@ -30,7 +29,7 @@ namespace Slax.Schedule
         public static event UnityAction OnInBetweenTickFired;
         protected DateTime _dateTime;
         protected int _tickMinutesIncrease = 10;
-        protected float _timeBetweenTicks = 1f;
+        protected static float _timeBetweenTicks = 1f;
         protected float _currentTimeBetweenTicks = 0;
 
         protected virtual void Start()
@@ -42,6 +41,7 @@ namespace Slax.Schedule
         protected virtual void Update()
         {
             if (_isPaused) return;
+
             _currentTimeBetweenTicks += Time.deltaTime;
 
             if (_currentTimeBetweenTicks >= _timeBetweenTicks)
@@ -92,6 +92,11 @@ namespace Slax.Schedule
             _minutes = t.Minutes;
 
             CreateDateTime();
+        }
+
+        public static void OnTimeFlowChanged(TimeFlow timeFlow)
+        {
+            _timeBetweenTicks = (int)timeFlow;
         }
 
         protected virtual void Tick()
