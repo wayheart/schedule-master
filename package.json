@@ -17,7 +17,7 @@
 	},
 	"dependencies": {
 		"com.unity.textmeshpro": "^3.0.6",
-		"com.wayheart.simplesavemaster": "https://github.com/wayheart/Simple-Save-Master.git#upm"
+		"com.wayheart.simplesavemaster": "https://github.com/wayheart/Simple-Save-Master.git#0.0.1"
 	},
 	"files": [
 		"Documentation/**",
