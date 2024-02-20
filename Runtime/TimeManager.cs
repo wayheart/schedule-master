@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-using Simple.Save.Master.Runtime;
+using SimpleSaveMaster;
 
 namespace Slax.Schedule
 {
