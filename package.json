@@ -16,8 +16,7 @@
 		"email": "vy.skyp1nus@gmail.com"
 	},
 	"dependencies": {
-		"com.unity.textmeshpro": "^3.0.6",
-		"com.wayheart.simplesavemaster": "^0.0.1"
+		"com.unity.textmeshpro": "^3.0.6"
 	},
 	"files": [
 		"Documentation/**",
