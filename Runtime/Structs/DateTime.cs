@@ -1,4 +1,5 @@
 using UnityEngine;
+using Slax.Schedule.Utility;
 
 namespace Slax.Schedule
 {
@@ -127,12 +128,15 @@ namespace Slax.Schedule
         /// </summary>
         private AdvanceTimeStatus AdvanceDay(AdvanceTimeStatus status)
         {
-            if (_day + 1 > (Days)7)
+            if (_day + 1 > (Days)6)
             {
-                _day = (Days)1;
+                _day = 0;
                 //_totalNumWeeks++;
             }
-            else _day++;
+            else
+            {
+                _day++;
+            }
 
             _date++;
 

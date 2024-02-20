@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Simple.Save.Master.Runtime;
 
 namespace Slax.Schedule
 {
@@ -8,16 +9,7 @@ namespace Slax.Schedule
     /// </summary>
     public class TimeManager : MonoBehaviour
     {
-        [SerializeField] protected TimeConfigurationSO _timeConfiguration;
-        protected Season _season;
-        protected Month _month;
-        protected int _maxYears = 99;
-        protected int _year = 1;
-        protected int _date = 1;
-        protected int _hour = 0;
-        protected int _minutes = 0;
-        protected DayConfiguration _dayConfiguration;
-        protected bool _isPaused = true;
+        [SerializeField] private TimeConfigurationSO _timeConfigurationSO;
 
         public static event UnityAction<DateTime> OnAwake;
         public static event UnityAction<DateTime> OnNewDay;
@@ -27,10 +19,15 @@ namespace Slax.Schedule
         public static event UnityAction<DateTime> OnDateTimeChanged;
         /// <summary>Fired if there is time between ticks, can be useful</summary>
         public static event UnityAction OnInBetweenTickFired;
-        protected DateTime _dateTime;
-        protected int _tickMinutesIncrease = 10;
-        protected static float _timeBetweenTicks = 1f;
-        protected float _currentTimeBetweenTicks = 0;
+        
+        private SerializableDateTime serializableDateTime;
+        private DateTime _dateTime;
+        
+        private bool _isPaused = true;
+        
+        private int _tickMinutesIncrease = 10;
+        private static float _timeBetweenTicks = 1f;
+        private float _currentTimeBetweenTicks = 0;
 
         protected virtual void Start()
         {
@@ -84,12 +81,12 @@ namespace Slax.Schedule
 
         public virtual void SetTime(Timestamp t)
         {
-            _season = t.Season;
-            _month = t.Month;
-            _date = t.Date;
-            _year = t.Year;
-            _hour = t.Hour;
-            _minutes = t.Minutes;
+            serializableDateTime.Season = t.Season;
+            serializableDateTime.Month = t.Month;
+            serializableDateTime.Date = t.Date;
+            serializableDateTime.Year = t.Year;
+            serializableDateTime.Hour = t.Hour;
+            serializableDateTime.Minutes = t.Minutes;
 
             CreateDateTime();
         }
@@ -112,26 +109,58 @@ namespace Slax.Schedule
 
         protected virtual void Setup()
         {
-            _season = _timeConfiguration.Season;
-            _month = _timeConfiguration.Month;
-            _maxYears = _timeConfiguration.MaxYears;
-            _year = _timeConfiguration.Year;
-            _date = _timeConfiguration.Date;
-            _hour = _timeConfiguration.Hour;
-            _minutes = _timeConfiguration.Minutes;
-            _dayConfiguration = _timeConfiguration.DayConfiguration;
-            _tickMinutesIncrease = _timeConfiguration.TickMinutesIncrease;
-            _timeBetweenTicks = _timeConfiguration.TimeBetweenTicks;
+            if (SaveMaster.Exists<SerializableDateTime>())
+            {
+                serializableDateTime = SaveMaster.Load<SerializableDateTime>();
+            }
+            else
+            {
+                serializableDateTime.Season = _timeConfigurationSO.Season;
+                serializableDateTime.Month = _timeConfigurationSO.Month;
+                serializableDateTime.Year = _timeConfigurationSO.Year;
+                serializableDateTime.Date = _timeConfigurationSO.Date;
+                serializableDateTime.Hour = _timeConfigurationSO.Hour;
+                serializableDateTime.Minutes = _timeConfigurationSO.Minutes;
+                serializableDateTime.DayConfiguration = _timeConfigurationSO.DayConfiguration;
+            }
+
+            _tickMinutesIncrease = _timeConfigurationSO.TickMinutesIncrease;
+            _timeBetweenTicks = _timeConfigurationSO.TimeBetweenTicks;
         }
 
         protected virtual void CreateDateTime()
         {
-            _dateTime = new DateTime(_date, (int)_month, (int)_season, _year, _hour, _minutes * _tickMinutesIncrease, _dayConfiguration);
+            _dateTime = new DateTime(
+                serializableDateTime.Date,
+                (int)serializableDateTime.Month,
+                (int)serializableDateTime.Season,
+                serializableDateTime.Year,
+                serializableDateTime.Hour,
+                serializableDateTime.Minutes,
+                serializableDateTime.DayConfiguration);
 
             // We Invoke here so that other scripts can setup during awake with
             // the starting DateTime
             OnAwake?.Invoke(_dateTime);
             OnDateTimeChanged?.Invoke(_dateTime);
+        }
+
+        private void SaveDateTime()
+        {
+            serializableDateTime.Date = _dateTime.Date;
+            serializableDateTime.Month = _dateTime.Month;
+            serializableDateTime.Season = _dateTime.Season;
+            serializableDateTime.Year = _dateTime.Year;
+            serializableDateTime.Hour = _dateTime.Hour;
+            serializableDateTime.Minutes = _dateTime.Minutes;
+            serializableDateTime.DayConfiguration = _dateTime.DayConfiguration;
+            
+            SaveMaster.Save(serializableDateTime);
+        }
+
+        private void OnDisable()
+        {
+            SaveDateTime();
         }
     }
 }

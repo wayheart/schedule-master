@@ -1,4 +1,4 @@
-﻿namespace Slax.Schedule
+﻿namespace Slax.Schedule.Utility
 {
     /// <summary>
     /// Provides utility methods for working with dates and calendars.

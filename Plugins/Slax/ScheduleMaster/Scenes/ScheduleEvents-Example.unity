@@ -2345,10 +2345,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScheduleMasterManager
       objectReference: {fileID: 0}
+    - target: {fileID: 4406600308900266324, guid: ffbecfb6731bad5499deae045487ddd5, type: 3}
+      propertyPath: _timeConfigurationSO
+      value: 
+      objectReference: {fileID: 11400000, guid: f2aeee5a9d1e6bf4a9e0fd39efd4f9e2, type: 2}
     - target: {fileID: 8041718926862940442, guid: ffbecfb6731bad5499deae045487ddd5, type: 3}
       propertyPath: EventCheckAssociationData
       value: 
-      objectReference: {fileID: 11400000, guid: c946e3173ea418747b211f5b9059fb4f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 8630963623003720857, guid: ffbecfb6731bad5499deae045487ddd5, type: 3}
       propertyPath: m_RootOrder
       value: 1
