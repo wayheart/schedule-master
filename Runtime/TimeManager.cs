@@ -1,16 +1,16 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using SimpleSaveMaster;
+using Zenject;
 
 namespace Slax.Schedule
 {
     /// <summary>
     /// This class is responsible for handling time progress and invoking Tick update events
     /// </summary>
-    public class TimeManager : MonoBehaviour
+    public class TimeManager : ITickable, IInitializable, IDisposable
     {
-        [SerializeField] private TimeConfigurationSO _timeConfigurationSO;
-
         public static event UnityAction<DateTime> OnAwake;
         public static event UnityAction<DateTime> OnNewDay;
         public static event UnityAction<DateTime> OnNewMonth;
@@ -19,7 +19,8 @@ namespace Slax.Schedule
         public static event UnityAction<DateTime> OnDateTimeChanged;
         /// <summary>Fired if there is time between ticks, can be useful</summary>
         public static event UnityAction OnInBetweenTickFired;
-        
+
+        private TimeConfigurationSO _timeConfigurationSO;
         private SerializableDateTime serializableDateTime;
         private DateTime _dateTime;
         
@@ -29,13 +30,23 @@ namespace Slax.Schedule
         private static float _timeBetweenTicks = 1f;
         private float _currentTimeBetweenTicks = 0;
 
-        protected virtual void Start()
+        public void SetTimeConfigurationSO(TimeConfigurationSO timeConfigurationSO)
         {
-            Initialize();
-            Play();
+            _timeConfigurationSO = timeConfigurationSO;
+        }
+        
+        public void Initialize()
+        {
+            Setup();
+            CreateDateTime();
         }
 
-        protected virtual void Update()
+        public void Dispose()
+        {
+            SaveDateTime();
+        }
+
+        public void Tick()
         {
             if (_isPaused) return;
 
@@ -44,7 +55,7 @@ namespace Slax.Schedule
             if (_currentTimeBetweenTicks >= _timeBetweenTicks)
             {
                 _currentTimeBetweenTicks = 0;
-                Tick();
+                OnTickChangeDateTime();
             }
             else
             {
@@ -52,34 +63,28 @@ namespace Slax.Schedule
             }
         }
 
-        public virtual void Initialize()
-        {
-            Setup();
-            CreateDateTime();
-        }
-
-        public virtual void Play()
+        public void Play()
         {
             _isPaused = false;
         }
 
-        public virtual void Pause()
+        public void Pause()
         {
             _isPaused = true;
         }
 
-        public virtual void SetNewDay()
-        {
-            Pause();
-            AdvanceTimeStatus status = _dateTime.SetNewDay();
-            if (status.AdvancedDay) OnNewDay?.Invoke(_dateTime);
-            if (status.AdvancedDay) OnNewMonth?.Invoke(_dateTime);
-            if (status.AdvancedSeason) OnNewSeason?.Invoke(_dateTime);
-            if (status.AdvancedYear) OnNewYear?.Invoke(_dateTime);
-            Play();
-        }
+        // public void SetNewDay()
+        // {
+        //     Pause();
+        //     AdvanceTimeStatus status = _dateTime.SetNewDay();
+        //     if (status.AdvancedDay) OnNewDay?.Invoke(_dateTime);
+        //     if (status.AdvancedDay) OnNewMonth?.Invoke(_dateTime);
+        //     if (status.AdvancedSeason) OnNewSeason?.Invoke(_dateTime);
+        //     if (status.AdvancedYear) OnNewYear?.Invoke(_dateTime);
+        //     Play();
+        // }
 
-        public virtual void SetTime(Timestamp t)
+        public void SetTime(Timestamp t)
         {
             serializableDateTime.Season = t.Season;
             serializableDateTime.Month = t.Month;
@@ -87,7 +92,7 @@ namespace Slax.Schedule
             serializableDateTime.Year = t.Year;
             serializableDateTime.Hour = t.Hour;
             serializableDateTime.Minutes = t.Minutes;
-
+        
             CreateDateTime();
         }
 
@@ -96,7 +101,7 @@ namespace Slax.Schedule
             _timeBetweenTicks = (int)timeFlow;
         }
 
-        protected virtual void Tick()
+        private void OnTickChangeDateTime()
         {
             // AdvanceTimeStatus status = _dateTime.AdvanceMinutes(_tickMinutesIncrease);
             AdvanceTimeStatus status = _dateTime.SetNewDay();
@@ -107,7 +112,7 @@ namespace Slax.Schedule
             if (status.AdvancedYear) OnNewYear?.Invoke(_dateTime);
         }
 
-        protected virtual void Setup()
+        private void Setup()
         {
             if (SaveMaster.Exists<SerializableDateTime>())
             {
@@ -128,7 +133,7 @@ namespace Slax.Schedule
             _timeBetweenTicks = _timeConfigurationSO.TimeBetweenTicks;
         }
 
-        protected virtual void CreateDateTime()
+        private void CreateDateTime()
         {
             _dateTime = new DateTime(
                 serializableDateTime.Date,
@@ -154,13 +159,8 @@ namespace Slax.Schedule
             serializableDateTime.Hour = _dateTime.Hour;
             serializableDateTime.Minutes = _dateTime.Minutes;
             serializableDateTime.DayConfiguration = _dateTime.DayConfiguration;
-            
-            SaveMaster.Save(serializableDateTime);
-        }
 
-        private void OnDisable()
-        {
-            SaveDateTime();
+            SaveMaster.Save(serializableDateTime);
         }
     }
 }

@@ -24,21 +24,21 @@ MonoBehaviour:
     Frequency: 0
     Timestamp:
       Day: 0
-      Date: 4
-      Hour: 7
-      Minutes: 0
-      Year: 1
-      Month: 0
-      Season: 0
-    IgnoreEndsAt: 1
-    EndsAt:
-      Day: 0
       Date: 1
       Hour: 0
       Minutes: 0
-      Year: 0
+      Year: 1
       Month: 0
-      Season: 0
+      Season: 3
+    IgnoreEndsAt: 0
+    EndsAt:
+      Day: 1
+      Date: 2
+      Hour: 0
+      Minutes: 0
+      Year: 1
+      Month: 0
+      Season: 3
   - Name: Move the star to the right
     ID: 2
     AllSeasons: 1
@@ -47,15 +47,15 @@ MonoBehaviour:
     SkipAutumn: 0
     SkipWinter: 0
     Type: 0
-    Frequency: 0
+    Frequency: 4
     Timestamp:
-      Day: 0
-      Date: 4
-      Hour: 8
+      Day: 4
+      Date: 5
+      Hour: 0
       Minutes: 0
       Year: 1
       Month: 0
-      Season: 0
+      Season: 3
     IgnoreEndsAt: 1
     EndsAt:
       Day: 0
@@ -75,13 +75,13 @@ MonoBehaviour:
     Type: 0
     Frequency: 4
     Timestamp:
-      Day: 0
-      Date: 4
-      Hour: 10
+      Day: 2
+      Date: 10
+      Hour: 0
       Minutes: 0
       Year: 1
       Month: 0
-      Season: 0
+      Season: 3
     IgnoreEndsAt: 1
     EndsAt:
       Day: 0
@@ -91,30 +91,4 @@ MonoBehaviour:
       Year: 0
       Month: 0
       Season: 0
-  - Name: Left move
-    ID: 1
-    AllSeasons: 1
-    SkipSpring: 0
-    SkipSummer: 0
-    SkipAutumn: 0
-    SkipWinter: 0
-    Type: 0
-    Frequency: 0
-    Timestamp:
-      Day: 0
-      Date: 1
-      Hour: 0
-      Minutes: 0
-      Year: 1
-      Month: 0
-      Season: 3
-    IgnoreEndsAt: 0
-    EndsAt:
-      Day: 2
-      Date: 3
-      Hour: 0
-      Minutes: 0
-      Year: 1
-      Month: 0
-      Season: 3
   DefaultFilePath: Assets/Plugins/Slax/ScheduleMaster/demo_schedule_events.json

@@ -21,14 +21,14 @@ namespace Slax.Schedule
         [Header("Schedule Event Checks")]
         public ScheduleEventCheckAssociationSO EventCheckAssociationData;
 
-        protected override void OnEnable()
+        public override void Initialize()
         {
-            base.OnEnable();
+            base.Initialize();
         }
 
-        protected override void OnDisable()
+        public override void Dispose()
         {
-            base.OnDisable();
+            base.Dispose();
         }
 
         /// <summary>

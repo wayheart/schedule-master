@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 namespace Slax.Schedule
 {
@@ -14,27 +16,31 @@ namespace Slax.Schedule
     /// Keep in mind that when creating an TickObserver class alongside the Schedule Manager
     /// it will impact performance a little bit as the CheckEventOnTick will happen in both
     /// </summary>
-    public abstract class TickObserver : MonoBehaviour
-    {
-        [SerializeField] protected ScheduleEventsSO _scheduleEvents;
+    public abstract class TickObserver : IInitializable, IDisposable
+    { 
+        protected ScheduleEventsSO _scheduleEvents;
 
         /// <summary>Event fired when one or multiple events start</summary>
         public event UnityAction<List<ScheduleEvent>> OnTickReceived = delegate { };
         /// <summary>Event fired if the time between ticks configuration is > 1</summary>
         public event UnityAction OnInBetweenTickReceived = delegate { };
 
-        protected virtual void OnEnable()
+        public void SetScheduleEvents(ScheduleEventsSO scheduleEvents) 
+        {
+            _scheduleEvents = scheduleEvents;
+        }
+        
+        public virtual void Initialize()
         {
             TimeManager.OnDateTimeChanged += CheckEventOnTick;
             TimeManager.OnInBetweenTickFired += FireInBetweenTick;
         }
 
-        protected virtual void OnDisable()
+        public virtual void Dispose()
         {
             TimeManager.OnDateTimeChanged -= CheckEventOnTick;
             TimeManager.OnInBetweenTickFired -= FireInBetweenTick;
         }
-
 
         /// <summary>
         /// Goes through the events dictionaries and invokes events if

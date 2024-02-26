@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace Slax.Schedule
 {
@@ -12,19 +13,20 @@ namespace Slax.Schedule
     /// </summary>
     public abstract class TickManagerObserver : MonoBehaviour
     {
+        [Inject]
         protected TickObserver _manager;
 
         protected virtual void Awake()
         {
-            _manager = FindObjectOfType<ScheduleManager>();
+            // _manager = FindObjectOfType<ScheduleManager>();
 
-            if (!_manager) return;
+            if (_manager == null) return;
             _manager.OnTickReceived += ProcessScheduleEvent;
         }
 
         protected virtual void OnDisable()
         {
-            if (_manager)
+            if (_manager != null)
             {
                 _manager.OnTickReceived -= ProcessScheduleEvent;
             }
